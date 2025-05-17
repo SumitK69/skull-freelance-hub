@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock, BadgeIndianRupee } from "lucide-react";
 import SkillBadge from "./SkillBadge";
 import { Link } from "react-router-dom";
 
@@ -57,7 +57,7 @@ const TaskCard = ({
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="flex items-center text-skull-purple font-semibold">
-          <DollarSign className="h-4 w-4 mr-1" />
+          <BadgeIndianRupee className="h-4 w-4 mr-1" />
           {budget.toFixed(2)}
         </div>
         <Button asChild className="bg-skull-purple hover:bg-skull-purple/90">

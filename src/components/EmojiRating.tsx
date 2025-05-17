@@ -1,13 +1,12 @@
 
 import { useState } from 'react';
+import { Skull } from 'lucide-react';
 
 type EmojiRatingProps = {
   initialRating?: number;
   onChange?: (rating: number) => void;
   readOnly?: boolean;
 };
-
-const emojis = ['💀', '😢', '😐', '😊', '🔥'];
 
 const EmojiRating = ({ initialRating = 0, onChange, readOnly = false }: EmojiRatingProps) => {
   const [rating, setRating] = useState(initialRating);
@@ -23,22 +22,21 @@ const EmojiRating = ({ initialRating = 0, onChange, readOnly = false }: EmojiRat
   };
 
   return (
-    <div className="flex space-x-2 items-center">
-      {emojis.map((emoji, index) => {
-        const ratingValue = index + 1;
+    <div className="flex space-x-1 items-center">
+      {[1, 2, 3, 4, 5].map((value) => {
         return (
           <span
-            key={index}
+            key={value}
             className={`emoji-rating ${
-              (hoverRating || rating) >= ratingValue
-                ? 'opacity-100 scale-110'
-                : 'opacity-50'
+              (hoverRating || rating) >= value
+                ? 'text-skull-purple opacity-100 scale-110'
+                : 'text-gray-400 opacity-50'
             } ${readOnly ? 'cursor-default' : 'cursor-pointer'}`}
-            onClick={() => handleRatingChange(ratingValue)}
-            onMouseEnter={() => !readOnly && setHoverRating(ratingValue)}
+            onClick={() => handleRatingChange(value)}
+            onMouseEnter={() => !readOnly && setHoverRating(value)}
             onMouseLeave={() => !readOnly && setHoverRating(0)}
           >
-            {emoji}
+            <Skull size={18} />
           </span>
         );
       })}
