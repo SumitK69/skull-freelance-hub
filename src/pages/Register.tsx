@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,23 +8,57 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const [userType, setUserType] = useState<'student' | 'client'>('student');
   const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [university, setUniversity] = useState("");
+  const [company, setCompany] = useState("");
+  
+  const navigate = useNavigate();
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     
-    // Simulate submission
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Register the user with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            full_name: name,
+            user_type: userType,
+            university: userType === 'student' ? university : null,
+            company: userType === 'client' ? company : null
+          }
+        }
+      });
+      
+      if (error) throw error;
+      
       toast({
         title: "Account created!",
         description: "Check your email to verify your account.",
       });
-    }, 1500);
+      
+      // Automatically navigate to login page
+      navigate('/login');
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,30 +96,60 @@ const Register = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" placeholder="John Doe" required />
+                <Input 
+                  id="name" 
+                  placeholder="John Doe" 
+                  required 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="johndoe@example.com" required />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="johndoe@example.com" 
+                  required 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" placeholder="••••••••" required />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  placeholder="••••••••" 
+                  required 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               
               {userType === 'student' && (
                 <div className="space-y-2">
                   <Label htmlFor="university">University/College</Label>
-                  <Input id="university" placeholder="Your school name" />
+                  <Input 
+                    id="university" 
+                    placeholder="Your school name" 
+                    value={university}
+                    onChange={(e) => setUniversity(e.target.value)}
+                  />
                 </div>
               )}
               
               {userType === 'client' && (
                 <div className="space-y-2">
                   <Label htmlFor="company">Company (Optional)</Label>
-                  <Input id="company" placeholder="Your company name" />
+                  <Input 
+                    id="company" 
+                    placeholder="Your company name" 
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                  />
                 </div>
               )}
               

@@ -1,17 +1,38 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Menu, X, UserCircle } from 'lucide-react';
+import { Menu, X, UserCircle, LogOut } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import { Session } from '@supabase/supabase-js';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Will be replaced with real auth
+  const [session, setSession] = useState<Session | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, newSession) => {
+        setSession(newSession);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   
-  // Temporary toggle for demo purposes
-  const toggleAuth = () => setIsAuthenticated(!isAuthenticated);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-skull-dark/70 backdrop-blur-lg border-b border-border">
@@ -35,11 +56,17 @@ const Navigation = () => {
               About
             </Link>
             
-            {isAuthenticated ? (
+            {session ? (
               <div className="flex items-center space-x-4">
-                <Button onClick={toggleAuth} variant="ghost" className="hover:bg-skull-purple/20">
-                  <UserCircle className="mr-2 h-4 w-4" />
-                  Profile
+                <Button asChild variant="ghost" className="hover:bg-skull-purple/20">
+                  <Link to="/profile">
+                    <UserCircle className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </Button>
+                <Button onClick={handleLogout} variant="ghost" className="hover:bg-skull-purple/20">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
                 </Button>
               </div>
             ) : (
@@ -89,14 +116,25 @@ const Navigation = () => {
               About
             </Link>
             
-            {isAuthenticated ? (
-              <Link 
-                to="/profile" 
-                className="block px-3 py-2 rounded-md text-base font-medium text-skull-light hover:bg-skull-purple/20"
-                onClick={toggleMenu}
-              >
-                Profile
-              </Link>
+            {session ? (
+              <>
+                <Link 
+                  to="/profile" 
+                  className="block px-3 py-2 rounded-md text-base font-medium text-skull-light hover:bg-skull-purple/20"
+                  onClick={toggleMenu}
+                >
+                  Profile
+                </Link>
+                <button 
+                  className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-skull-light hover:bg-skull-purple/20"
+                  onClick={() => {
+                    handleLogout();
+                    toggleMenu();
+                  }}
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <>
                 <Link 
