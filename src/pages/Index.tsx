@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -14,7 +13,7 @@ const Index = () => {
       description: "Looking for a creative designer to create 10 trendy Instagram story templates for a fashion brand.",
       budget: 120,
       dueDate: "2025-06-01",
-      skills: [{ name: "Design", level: "intermediate" }, { name: "Social Media" }],
+      skills: [{ name: "Design", level: "intermediate" as const }, { name: "Social Media" }],
       status: "open" as const
     },
     {
@@ -23,7 +22,7 @@ const Index = () => {
       description: "Need someone to edit my 15-minute gaming videos with effects and transitions.",
       budget: 80,
       dueDate: "2025-05-25",
-      skills: [{ name: "Video Editing", level: "advanced" }],
+      skills: [{ name: "Video Editing", level: "advanced" as const }],
       status: "open" as const
     },
     {
@@ -32,7 +31,7 @@ const Index = () => {
       description: "Need a responsive landing page built with React and Tailwind CSS for my startup.",
       budget: 200,
       dueDate: "2025-06-10",
-      skills: [{ name: "React", level: "intermediate" }, { name: "Tailwind" }],
+      skills: [{ name: "React", level: "intermediate" as const }, { name: "Tailwind" }],
       status: "open" as const
     }
   ];
@@ -44,9 +43,9 @@ const Index = () => {
       title: "Motion Graphics Designer",
       rating: 5,
       skills: [
-        { name: "After Effects", level: "advanced" },
-        { name: "Premiere Pro", level: "advanced" },
-        { name: "Illustrator", level: "intermediate" }
+        { name: "After Effects", level: "advanced" as const },
+        { name: "Premiere Pro", level: "advanced" as const },
+        { name: "Illustrator", level: "intermediate" as const }
       ],
       available: true
     },
@@ -56,9 +55,9 @@ const Index = () => {
       title: "Frontend Developer",
       rating: 4,
       skills: [
-        { name: "React", level: "advanced" },
-        { name: "TypeScript", level: "intermediate" },
-        { name: "Tailwind", level: "advanced" }
+        { name: "React", level: "advanced" as const },
+        { name: "TypeScript", level: "intermediate" as const },
+        { name: "Tailwind", level: "advanced" as const }
       ],
       available: true
     },
@@ -68,9 +67,9 @@ const Index = () => {
       title: "Content Creator",
       rating: 5,
       skills: [
-        { name: "Copywriting", level: "advanced" },
-        { name: "Social Media", level: "advanced" },
-        { name: "Photography", level: "intermediate" }
+        { name: "Copywriting", level: "advanced" as const },
+        { name: "Social Media", level: "advanced" as const },
+        { name: "Photography", level: "intermediate" as const }
       ],
       available: false
     }
